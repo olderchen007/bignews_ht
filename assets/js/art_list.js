@@ -5,6 +5,8 @@ $(function() {
         // 分页区
     var laypage = layui.laypage;
 
+    initEditor()
+
     // 定义美化时间的过滤器 (模板引xing的)
     template.defaults.imports.dataFormat = function(date) {
         const dt = new Date(date)
@@ -158,5 +160,54 @@ $(function() {
 
             layer.close(index);
         });
+    })
+
+    // cropper裁剪区
+    // 1. 初始化图片裁剪器
+    var $image = $('#image')
+
+    // 2. 裁剪选项
+    var options = {
+        aspectRatio: 400 / 280,
+        preview: '.img-preview'
+    }
+
+    // 3. 初始化裁剪区域
+    $image.cropper(options)
+
+    // 点击编辑按钮 click 事件
+    $('tbody').on('click', '.btn-edit', function() {
+        $('#pub_edit').show();
+        $('#art_listcart').hide()
+        var id = $(this).attr('data-id')
+
+        $.ajax({
+            method: 'GET',
+            url: '/my/article/' + id,
+            success: function(res) {
+                if (res.status != 0) {
+                    return layer.msg('获取文章内容失败！')
+                }
+                $('[name=title]').val(res.data.title)
+                    // console.log(res.data.title);
+                console.log(res.data.content);
+                var content = res.data.content
+                content = content.replace("<p>", "");
+                content = content.replace("</p>", "");
+                console.log(content);
+                $('[name=content]').val(content)
+                layer.msg('获取文章内容成功！')
+
+                //调用模板引xing ,渲染分类的下拉菜单
+                var htmlStr = template('tpl-catepub', res)
+                $('#pub_cate_id').html(htmlStr)
+
+                // form.render()
+
+
+
+            }
+        })
+
     })
 })

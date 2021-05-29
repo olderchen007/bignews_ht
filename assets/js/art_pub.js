@@ -99,7 +99,7 @@ $(function() {
             url: '/my/article/add',
             data: fd,
             //注意：如果向服务器提交的是 ForDate 格式的数据
-            //必须天机以下两个配置项
+            //必须天添加以下两个配置项
             contentType: false,
             processData: false,
             success: function(res) {
